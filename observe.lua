@@ -39,7 +39,7 @@ local function observeLoop()
     redstoneActive = false
     
     while true do
-        minimumReachedAmount = 0
+        minimumReachedAmount = #OBSERVED
         shell.run("clear")
         
         for i = 1, #OBSERVED do
@@ -51,11 +51,11 @@ local function observeLoop()
 
             if amount < OBSERVED[i]["minimumCount"] then
                 print(OBSERVED[i]["name"], "is under its minimum", OBSERVED[i]["minimumCount"])
-                minimumReachedAmount = minimumReachedAmount + 1
+                minimumReachedAmount = minimumReachedAmount - 1
             end
         end
 
-        if minimumReachedAmount < #OBSERVED then
+        if minimumReachedAmount == 0 then
             redstone.setOutput(CONFIG_REDSTONE_OUTPUT_SIDE, false)
         else
             redstone.setOutput(CONFIG_REDSTONE_OUTPUT_SIDE, true)
