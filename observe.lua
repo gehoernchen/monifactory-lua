@@ -1,15 +1,25 @@
 local BRIDGE = peripheral.find("meBridge")
-local CONFIG_REDSTONE_OUTPUT_SIDE = "back"
+local CONFIG_REDSTONE_OUTPUT_SIDE = "left"
 local OBSERVED = {
     {
-        name = "gtceu:iridium_dust",
-        minimumCount = 256,
-        type = "item"
+        name = "gtceu:ethylbenzene",
+        minimumCount = 500000,
+        type = "fluid"
     },
     {
-        name = "gtceu:osmium_dust",
-        minimumCount = 256,
-        type = "item"
+        name = "gtceu:ammonia",
+        minimumCount = 500000,
+        type = "fluid"
+    },
+    {
+        name = "gtceu:coal_tar",
+        minimumCount = 500000,
+        type = "fluid"
+    },
+    {
+        name = "gtceu:carbon_dioxide",
+        minimumCount = 500000,
+        type = "fluid"
     }
 }
 
@@ -55,10 +65,10 @@ local function observeLoop()
             end
         end
 
-        if minimumReachedAmount == 0 then
-            redstone.setOutput(CONFIG_REDSTONE_OUTPUT_SIDE, false)
-        else
+        if minimumReachedAmount == 5 then
             redstone.setOutput(CONFIG_REDSTONE_OUTPUT_SIDE, true)
+        else
+            redstone.setOutput(CONFIG_REDSTONE_OUTPUT_SIDE, false)
         end
 
         os.sleep(15)
