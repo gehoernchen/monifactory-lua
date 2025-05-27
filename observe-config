@@ -1,0 +1,26 @@
+NEWLINES = true
+CONFIG_REDSTONE_OUTPUT_SIDE = "left"
+UPDATE_RATE = 15
+
+OBSERVED = {
+    {
+        name = "gtceu:ethylbenzene",
+        minimumCount = 500000,
+        type = "fluid"
+    },
+    {
+        name = "gtceu:ammonia",
+        minimumCount = 500000,
+        type = "fluid"
+    },
+    {
+        name = "gtceu:coal_tar",
+        minimumCount = 500000,
+        type = "fluid"
+    },
+    {
+        name = "gtceu:carbon_dioxide",
+        minimumCount = 500000,
+        type = "fluid"
+    }
+}

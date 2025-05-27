@@ -1,27 +1,5 @@
 local BRIDGE = peripheral.find("meBridge")
-local CONFIG_REDSTONE_OUTPUT_SIDE = "left"
-local OBSERVED = {
-    {
-        name = "gtceu:ethylbenzene",
-        minimumCount = 500000,
-        type = "fluid"
-    },
-    {
-        name = "gtceu:ammonia",
-        minimumCount = 500000,
-        type = "fluid"
-    },
-    {
-        name = "gtceu:coal_tar",
-        minimumCount = 500000,
-        type = "fluid"
-    },
-    {
-        name = "gtceu:carbon_dioxide",
-        minimumCount = 500000,
-        type = "fluid"
-    }
-}
+local CONFIG_FILE = "observe-config"
 
 local function getCountItem(itemName)
     item = BRIDGE.getItem({name=itemName})
@@ -33,7 +11,7 @@ local function getCountItem(itemName)
     return item["amount"]
 end    
  
-local function getCountFluid(fluidName)
+local function getCountFluid(fluidName, asBuckets)
     allFluids = BRIDGE.listFluid()
     
     for i = 1, #allFluids do
@@ -45,13 +23,38 @@ local function getCountFluid(fluidName)
     return 0
 end
 
+local function printObservedItems()
+    local time = textutils.formatTime(os.time("local"), true)
+
+    print("Last updated:", time)
+    print()
+    print("Observed objects:")
+    
+    for _, item in pairs(OBSERVED) do
+        term.setTextColor(item["color"])
+
+        if item["type"] == "item" then
+            print(item["name"], "T:", item["minimumCount"], "A:", item["actualAmount"])
+        else
+            print(item["name"], "T:", item["minimumCount"] / 1000 .. 'B', "A:", item["actualAmount"] / 1000 .. 'B')
+        end
+        if NEWLINES then
+            print()
+        end
+    end
+
+    term.setTextColor(colors.white)
+end
+
 local function observeLoop()
     redstoneActive = false
+    require(CONFIG_FILE)
     
     while true do
         minimumReachedAmount = #OBSERVED
         shell.run("clear")
         
+        -- prepare table
         for i = 1, #OBSERVED do
             if OBSERVED[i]["type"] == "fluid" then
                 amount = getCountFluid(OBSERVED[i]["name"])
@@ -59,11 +62,18 @@ local function observeLoop()
                 amount = getCountItem(OBSERVED[i]["name"])
             end
 
-            if amount < OBSERVED[i]["minimumCount"] then
-                print(OBSERVED[i]["name"], "is under its minimum", OBSERVED[i]["minimumCount"])
+            OBSERVED[i]["actualAmount"] = amount
+
+            if OBSERVED[i]["actualAmount"] < OBSERVED[i]["minimumCount"] then
+                OBSERVED[i]["color"] = colors.red
+                minimumReachedAmount = minimumReachedAmount - 1
+            else
+                OBSERVED[i]["color"] = colors.white
                 minimumReachedAmount = minimumReachedAmount - 1
             end
         end
+
+        printObservedItems()
 
         if minimumReachedAmount == #OBSERVED then
             redstone.setOutput(CONFIG_REDSTONE_OUTPUT_SIDE, true)
@@ -71,8 +81,16 @@ local function observeLoop()
             redstone.setOutput(CONFIG_REDSTONE_OUTPUT_SIDE, false)
         end
 
-        os.sleep(15)
+        os.sleep(UPDATE_RATE)
     end
 end
 
+local function checkConfigExists()
+    if not fs.exists(CONFIG_FILE) then
+        print("Configuration file", CONFIG_FILE, "does not exist! Exiting now.")
+        error()
+    end
+end
+
+checkConfigExists()
 observeLoop()
