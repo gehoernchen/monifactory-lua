@@ -65,7 +65,7 @@ local function observeLoop()
             end
         end
 
-        if minimumReachedAmount == 5 then
+        if minimumReachedAmount == #OBSERVED then
             redstone.setOutput(CONFIG_REDSTONE_OUTPUT_SIDE, true)
         else
             redstone.setOutput(CONFIG_REDSTONE_OUTPUT_SIDE, false)
