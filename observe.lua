@@ -1,9 +1,14 @@
+-- VERSION 0.3
+-- 2025-05-28
+-- Antonia
+
 local CONFIG_FILE = "observe-config"
 
 -- non-local so it can be overriden but have a default
 NEWLINES = true
 UPDATE_RATE = 15
 BRIDGE = peripheral.find("meBridge")
+CONFIG_REDSTONE_OUTPUT_SIDE = ""
 
 local function getCountItem(itemName)
     item = BRIDGE.getItem({name=itemName})
@@ -31,6 +36,14 @@ local function printObservedItems()
     local time = textutils.formatTime(os.time("local"), true)
 
     print("Last updated:", time)
+
+    if redstone.getOutput(CONFIG_REDSTONE_OUTPUT_SIDE) then
+        rsStatus = "Enabled"
+    else
+        rsStatus = "Disabled"
+    end
+
+    print("Redstone:", CONFIG_REDSTONE_OUTPUT_SIDE, "&", rsStatus)
     print()
     print("Observed objects:")
     
@@ -51,11 +64,10 @@ local function printObservedItems()
 end
 
 local function observeLoop()
-    redstoneActive = false
     require(CONFIG_FILE)
     
     while true do
-        minimumReachedAmount = #OBSERVED
+        redstoneActive = true
         shell.run("clear")
         
         -- prepare table
@@ -70,20 +82,14 @@ local function observeLoop()
 
             if OBSERVED[i]["actualAmount"] < OBSERVED[i]["minimumCount"] then
                 OBSERVED[i]["color"] = colors.red
-                minimumReachedAmount = minimumReachedAmount - 1
+                redstoneActive = false
             else
                 OBSERVED[i]["color"] = colors.white
-                minimumReachedAmount = minimumReachedAmount - 1
             end
         end
 
+        redstone.setOutput(CONFIG_REDSTONE_OUTPUT_SIDE, redstoneActive)
         printObservedItems()
-
-        if minimumReachedAmount == #OBSERVED then
-            redstone.setOutput(CONFIG_REDSTONE_OUTPUT_SIDE, true)
-        else
-            redstone.setOutput(CONFIG_REDSTONE_OUTPUT_SIDE, false)
-        end
 
         os.sleep(UPDATE_RATE)
     end
