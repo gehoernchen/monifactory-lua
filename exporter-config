@@ -1,0 +1,16 @@
+GLOBAL_TARGET = "north"
+UPDATE_RATE = 15
+MAX_LINES = 10
+
+EXPORTS = {
+    { 
+        name = "gtceu:aluminium_dust",
+        count = 64,
+        type = "item"
+    },
+    {
+        name = "gtceu:hydrogen",
+        count = 16000,
+        type = "fluid"
+    },
+}

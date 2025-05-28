@@ -1,5 +1,9 @@
-local BRIDGE = peripheral.find("meBridge")
 local CONFIG_FILE = "observe-config"
+
+-- non-local so it can be overriden but have a default
+NEWLINES = true
+UPDATE_RATE = 15
+BRIDGE = peripheral.find("meBridge")
 
 local function getCountItem(itemName)
     item = BRIDGE.getItem({name=itemName})

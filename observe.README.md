@@ -28,6 +28,6 @@ You may start with the example `observe-config` provided here.
 Notes:
 - Amounts for fluids are given as mB.
 - Without the configuration file, the script will not work
-- If `NEWLINES` is given, each observed item is followed by a new line, aiding readability
-- `CONFIG_REDSTONE_OUTPUT_SIDE` determines the side to output a redstone signal to
-- `UPDATE_RATE` determines how often to check the amounts in the ME
+- If `NEWLINES` is given, each observed item is followed by a new line, aiding readability, true by default
+- `CONFIG_REDSTONE_OUTPUT_SIDE` determines the side to output a redstone signal to, set to "back" by default
+- `UPDATE_RATE` determines how often to check the amounts in the ME in seconds and is set to 15s by default
