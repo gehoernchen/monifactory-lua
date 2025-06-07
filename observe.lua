@@ -68,28 +68,40 @@ local function observeLoop()
     
     while true do
         redstoneActive = true
+        doLoop = true
         shell.run("clear")
+
+        -- check if there is an ME
+        if BRIDGE.listCells() == nil then
+            local time = textutils.formatTime(os.time("local"), true)
+            print(time)
+            print("ME not found, skipping...")
+            doLoop = false
+        end
         
         -- prepare table
-        for i = 1, #OBSERVED do
-            if OBSERVED[i]["type"] == "fluid" then
-                amount = getCountFluid(OBSERVED[i]["name"])
-            elseif OBSERVED[i]["type"] == "item" then
-                amount = getCountItem(OBSERVED[i]["name"])
+
+        if doLoop then
+            for i = 1, #OBSERVED do
+                if OBSERVED[i]["type"] == "fluid" then
+                    amount = getCountFluid(OBSERVED[i]["name"])
+                elseif OBSERVED[i]["type"] == "item" then
+                    amount = getCountItem(OBSERVED[i]["name"])
+                end
+
+                OBSERVED[i]["actualAmount"] = amount
+
+                if OBSERVED[i]["actualAmount"] < OBSERVED[i]["minimumCount"] then
+                    OBSERVED[i]["color"] = colors.red
+                    redstoneActive = false
+                else
+                    OBSERVED[i]["color"] = colors.white
+                end
             end
 
-            OBSERVED[i]["actualAmount"] = amount
-
-            if OBSERVED[i]["actualAmount"] < OBSERVED[i]["minimumCount"] then
-                OBSERVED[i]["color"] = colors.red
-                redstoneActive = false
-            else
-                OBSERVED[i]["color"] = colors.white
-            end
+            redstone.setOutput(CONFIG_REDSTONE_OUTPUT_SIDE, redstoneActive)
+            printObservedItems()
         end
-
-        redstone.setOutput(CONFIG_REDSTONE_OUTPUT_SIDE, redstoneActive)
-        printObservedItems()
 
         os.sleep(UPDATE_RATE)
     end
