@@ -1,26 +1,27 @@
-NEWLINES = true
-CONFIG_REDSTONE_OUTPUT_SIDE = "left"
-UPDATE_RATE = 15
+CONFIG_REDSTONE_OUTPUT_SIDE = "right"
 
 OBSERVED = {
     {
-        name = "gtceu:ethylbenzene",
+        name = "gtceu:nitrogen_dioxide",
         minimumCount = 500000,
-        type = "fluid"
+        type = "fluid",
+        mode = "minimum"
     },
     {
-        name = "gtceu:ammonia",
+        name = "gtceu:deuterium",
         minimumCount = 500000,
-        type = "fluid"
+        type = "fluid",
     },
     {
-        name = "gtceu:coal_tar",
-        minimumCount = 500000,
-        type = "fluid"
+        name = "enderio:item_conduit",
+        maximumCount = 128,
+        minimumCount = 50,
+        type = "item",
     },
     {
-        name = "gtceu:carbon_dioxide",
-        minimumCount = 500000,
-        type = "fluid"
+        name = "enderio:vibrant_conduit",
+        maximumCount = 50,
+        minimumCount = 10,
+        type = "item",
     }
 }
