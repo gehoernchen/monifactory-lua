@@ -7,17 +7,60 @@ Create a file that looks like this and call it `exporter-config`:
 GLOBAL_TARGET = "north"
 UPDATE_RATE = 15
 
+GLOBAL_TARGET = "south"
+
 EXPORTS = {
     { 
         name = "gtceu:aluminium_dust",
         count = 64,
-        type = "item"
+        type = "item",
+        condition = "overflow"
     },
-    {
-        name = "gtceu:hydrogen",
-        count = 16000,
-        type = "fluid"
+    { 
+        name = "gtceu:hydrogen_gas",
+        count = 64000,
+        type = "fluid",
+        condition = "overflow"
     },
+    { 
+        name = "gtceu:carbon_dust",
+        count = 64,
+        type = "item",
+        condition = "overflow"
+    },
+    { 
+        name = "gtceu:sulfuric_acid",
+        count = 64000,
+        type = "fluid",
+        condition = "overflow"
+    },
+    { 
+        name = "gtceu:hydrochloric_acid",
+        count = 64000,
+        type = "fluid",
+        condition = "overflow"
+    },
+    { 
+        name = "gtceu:nitrogen_dioxide",
+        count = 32000,
+        type = "fluid",
+        condition = "oxygen"
+    },
+    { 
+        name = "gtceu:gold_dust",
+        count = 256,
+        type = "item",
+        condition = "overflow"
+    },
+}
+
+CONDITIONS = {
+    oxygen = {
+        name = "gtceu:oxygen",
+        type = "fluid",
+        count = 500000,
+        mode = "when_less"
+    }
 }
 ```
 

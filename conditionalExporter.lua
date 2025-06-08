@@ -1,12 +1,14 @@
--- VERSION 0.1
--- 2025-05-25
+-- VERSION 1.1
+-- 2025-06-08
+-- Antonia
 
 local CONFIG_FILE = "exporter-config"
 
 -- non-local so it can be overriden but have a default
 BRIDGE = peripheral.find("meBridge")
 UPDATE_RATE = 10
-GLOBAL_TARGET = "back"
+-- GLOBAL_TARGET = "back"
+MAX_LINES = 10
 
 local function getCountItem(itemName)
     item = BRIDGE.getItem({name=itemName})
@@ -30,6 +32,14 @@ local function getCountFluid(fluidName)
     return 0
 end
 
+local function getCountThing(name, type)
+    if type == "item" then
+        return getCountItem(name)
+    elseif type == "fluid" then
+        return getCountFluid(name)
+    end
+end
+
 local function exportItem(itemName, count, target)
     local time = textutils.formatTime(os.time("local"), true)
 
@@ -44,21 +54,63 @@ local function exportFluid(fluidName, count, target)
     BRIDGE.exportFluid({name=fluidName, count=count}, target)
 end    
 
+local function exportThing(name, count, target, type)
+    local time = textutils.formatTime(os.time("local"), true)
+
+    if type == "item" then
+        exportItem(name, count, target)
+    elseif type == "fluid" then
+        exportFluid(name, count, target)
+    end
+end
+
 local function exportConditional(target)
-    for item, values in pairs(EXPORTS) do
-        if values["type"] == "item" then
-            amountME = getCountItem(values["name"])
-        elseif values["type"] == "fluid" then
-            amountME = getCountFluid(values["name"])
+    -- get amount of item we're observing
+    for _, exportItem in pairs(EXPORTS) do
+        conditionSuccessful = false
+
+        -- get condition of export item
+        conditionName = exportItem["condition"]
+
+        -- if only using "overflow" there might not be a CONDITIONS table
+        if CONDITIONS ~= nil then
+            conditionObject = CONDITIONS[conditionName]
         end
-         
-        if amountME > values["count"] then
-            toExportAmount = amountME - values["count"]
-            if values["type"] == "item" then
-                exportItem(values["name"], toExportAmount, target)
-            elseif values["type"] == "fluid" then
-                exportFluid(values["name"], toExportAmount, target)
+
+        -- check if the condition is "overflow" - special built-in condition
+        if conditionName == "overflow" then
+            actualAmount = getCountThing(exportItem["name"], exportItem["type"])
+
+            if actualAmount > exportItem["count"] then
+                toExportAmount = actualAmount - exportItem["count"]
+                toExportName = exportItem["name"]
+                toExportType = exportItem["type"]
+
+                conditionSuccessful = true
             end
+        elseif (conditionObject["mode"] == "when_less" or conditionObject["mode"] == "when_more") then
+            -- check if the condition is actually true
+            conditionObjectActualAmount = getCountThing(conditionObject["name"], conditionObject["type"])
+            conditionObjectCheckAmount = conditionObject["count"]
+            toExportAmount = exportItem["count"]
+
+            if conditionObject["mode"] == "when_less" then
+                if conditionObjectCheckAmount > conditionObjectActualAmount then
+                    conditionSuccessful = true
+                end
+            elseif conditionObject["mode"] == "when_more" then
+                if conditionObjectCheckAmount < conditionObjectActualAmount then
+                    conditionSuccessful = true
+                end
+            end
+        end
+
+        -- when the set condition is true, export things
+        if conditionSuccessful then
+            toExportName = exportItem["name"]
+            toExportType = exportItem["type"]
+
+            exportThing(toExportName, toExportAmount, target, toExportType)
         end
     end
 end    
@@ -72,12 +124,6 @@ local function exportLoop()
     while true do
         exportConditional(target)
         sleep(UPDATE_RATE)
-        
-        printedLines = printedLines + 1
-
-        if printedLines == MAX_LINES then
-            shell.run("clear")
-        end
     end
 end
 
