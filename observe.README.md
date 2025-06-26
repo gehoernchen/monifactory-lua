@@ -13,7 +13,6 @@ CONFIG_REDSTONE_OUTPUT_SIDE = "left"
         name = "gtceu:nitrogen_dioxide",
         minimumCount = 500000,
         type = "fluid",
-        mode = "minimum"
     },
     {
         name = "gtceu:deuterium",
@@ -47,3 +46,4 @@ Notes:
 - If `NEWLINES` is given, each observed item is followed by a new line, aiding readability, true by default.
 - `CONFIG_REDSTONE_OUTPUT_SIDE` determines the side to output a redstone signal to, set to "back" by default.
 - `UPDATE_RATE` determines how often to check the amounts in the ME in seconds and is set to 15s by default.
+- You can add a `mode` to an item

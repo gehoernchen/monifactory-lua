@@ -1,5 +1,5 @@
--- VERSION 0.5
--- 2025-06-07
+-- VERSION 0.6
+-- 2025-06-26
 -- Antonia
 
 local CONFIG_FILE = "observe-config"
@@ -9,6 +9,7 @@ NEWLINES = true
 UPDATE_RATE = 15
 BRIDGE = peripheral.find("meBridge")
 CONFIG_REDSTONE_OUTPUT_SIDE = ""
+INVERT_REDSTONE = false
 
 local function getCountItem(itemName)
     item = BRIDGE.getItem({name=itemName})
@@ -43,7 +44,13 @@ local function printObservedItems()
         rsStatus = "Disabled"
     end
 
-    print("Redstone:", CONFIG_REDSTONE_OUTPUT_SIDE, "&", rsStatus)
+    redstonePrintLine = "Redstone: " .. CONFIG_REDSTONE_OUTPUT_SIDE .. " & " .. rsStatus
+
+    if INVERT_REDSTONE then
+        redstonePrintLine = redstonePrintLine .. " (inverted)"
+    end
+
+    print(redstonePrintLine)
     print()
     print("Observed objects:")
     
@@ -169,6 +176,10 @@ local function observeLoop()
             end
 
             ::continue::
+        end
+
+        if INVERT_REDSTONE then
+            redstoneActive = not redstoneActive
         end
 
         redstone.setOutput(CONFIG_REDSTONE_OUTPUT_SIDE, redstoneActive)
