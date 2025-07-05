@@ -1,53 +1,53 @@
-GLOBAL_TARGET = "south"
+GLOBAL_TARGET = "east"
 
 EXPORTS = {
-    -- { 
-    --     name = "gtceu:aluminium_dust",
-    --     count = 64,
-    --     type = "item",
-    --     condition = "overflow"
-    -- },
-    -- { 
-    --     name = "gtceu:hydrogen_gas",
-    --     count = 64000,
-    --     type = "fluid",
-    --     condition = "overflow"
-    -- },
-    -- { 
-    --     name = "gtceu:carbon_dust",
-    --     count = 64,
-    --     type = "item",
-    --     condition = "overflow"
-    -- },
-    -- { 
-    --     name = "gtceu:sulfuric_acid",
-    --     count = 64000,
-    --     type = "fluid",
-    --     condition = "overflow"
-    -- },
-    -- { 
-    --     name = "gtceu:hydrochloric_acid",
-    --     count = 64000,
-    --     type = "fluid",
-    --     condition = "overflow"
-    -- },
-    { 
-        name = "gtceu:nitrogen_dioxide",
-        count = 32000,
-        type = "fluid",
-        condition = "oxygen"
+     {
+         name = "gtceu:air",
+         count = 512000,
+         type = "fluid",
+         condition = "liquid_air"
     },
-    { 
-        name = "gtceu:gold_dust",
-        count = 256,
-        type = "item",
-        condition = "overflow"
+    {
+         name = "gtceu:nether_air",
+         count = 512000,
+         type = "fluid",
+         condition = "nether_air"
+    },
+    {
+        name = "gtceu:ender_air",
+        count = 512000,
+        type = "fluid",
+        condition = "ender_air"
+    },
+    {
+        name = "gtceu:helium_gas",
+        count = 512000,
+        type = "fluid",
+        condition = "liquid_helium"
     },
 }
 
 CONDITIONS = {
-    oxygen = {
-        name = "gtceu:oxygen",
+    liquid_air = {
+        name = "gtceu:liquid_air",
+        type = "fluid",
+        count = 500000,
+        mode = "when_less"
+    },
+    nether_air = {
+        name = "gtceu:nether_air",
+        type = "fluid",
+        count = 500000,
+        mode = "when_less"
+    },
+    ender_air = {
+        name = "gtceu:ender_air",
+        type = "fluid",
+        count = 500000,
+        mode = "when_less"
+    },
+    liquid_helium = {
+        name = "gtceu:liquid_helium",
         type = "fluid",
         count = 500000,
         mode = "when_less"
